@@ -41,7 +41,8 @@ def reply_to_tweets():
     mentions = api.mentions_timeline(
                         last_seen_id,
                         tweet_mode='extended')
-
+    
+    # using reversed to reply to older tweets first
     for mention in reversed(mentions):
         print(str(mention.id) + ' - ' + mention.full_text)
         last_seen_id = mention.id
