@@ -3,15 +3,13 @@ import time
 
 # Sentiment analysis using Text blob
 from analysis import get_tweet_sentiment
+
 # NOTE: I put my keys in the keys.py to separate them
 # from this main file.
-# Please refer to keys_format.py to see the format.
 from keys import *
 
-# NOTE: flush=True is just for running this script
-# with PythonAnywhere's always-on task.
 
-print(name_tag, flush=True)
+print(name_tag)
 
 auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
 auth.set_access_token(ACCESS_KEY, ACCESS_SECRET)
@@ -32,17 +30,20 @@ def store_last_seen_id(last_seen_id, file_name):
     return
 
 def reply_to_tweets():
-    print('Retrieving and replying to tweets...', flush=True)
-    # DEV NOTE: use 1060651988453654528 for testing.
+    print('Retrieving and replying to tweets...')
+    
+    # NOTE: Last seen id to not reply to same message again and again
     last_seen_id = retrieve_last_seen_id(FILE_NAME)
+    
     # NOTE: We need to use tweet_mode='extended' below to show
     # all full tweets (with full_text). Without it, long tweets
     # would be cut off.
     mentions = api.mentions_timeline(
                         last_seen_id,
                         tweet_mode='extended')
+
     for mention in reversed(mentions):
-        print(str(mention.id) + ' - ' + mention.full_text, flush=True)
+        print(str(mention.id) + ' - ' + mention.full_text)
         last_seen_id = mention.id
         store_last_seen_id(last_seen_id, FILE_NAME)
         if get_tweet_sentiment(mention.full_text.lower()) == 'positive':
